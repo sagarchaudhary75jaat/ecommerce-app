@@ -35,3 +35,83 @@
   background-color: #fff;
   color: #000;
 }
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: row;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .links {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #111;
+    flex-direction: column;
+    width: 200px;
+    padding: 10px;
+  }
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #111;
+  color: white;
+}
+
+.logo {
+  margin: 0;
+  font-size: 20px;
+}
+
+.links {
+  display: flex;
+  gap: 20px;
+}
+
+.link {
+  color: white;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: lightgray;
+}
+
+.hamburger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+/* ACTIVE LINK */
+.active {
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .links {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #111;
+    flex-direction: column;
+    width: 200px;
+    padding: 10px;
+  }
+
+  .links.active {
+    display: flex;
+  }
+}

@@ -1,9 +1,18 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  // 💾 Load cart from localStorage initially
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // 💾 Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   // ➕ Add to cart
   const addToCart = (product) => {
@@ -22,12 +31,12 @@ export function CartProvider({ children }) {
     });
   };
 
-  // ❌ Remove from cart
+  // ❌ Remove item
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // ➖ Decrease quantity
+  // ➖ Decrease qty
   const decreaseQty = (id) => {
     setCart((prev) =>
       prev
