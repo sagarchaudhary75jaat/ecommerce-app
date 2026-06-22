@@ -1,42 +1,19 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
   return (
-    <nav style={styles.nav}>
-      <h2 style={styles.logo}>E-Commerce</h2>
+    <nav className="nav">
+      <h2 className="logo">E-Commerce</h2>
 
-      <div style={styles.links}>
-        <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/products" style={styles.link}>Products</Link>
-        <Link to="/cart" style={styles.link}>Cart</Link>
-        <Link to="/wishlist" style={styles.link}>Wishlist</Link>
-        <Link to="/login" style={styles.link}>Login</Link>
+      <div className="links">
+        <NavLink to="/" className="link">Home</NavLink>
+        <NavLink to="/products" className="link">Products</NavLink>
+        <NavLink to="/cart" className="link">Cart</NavLink>
+        <NavLink to="/wishlist" className="link">Wishlist</NavLink>
+        <NavLink to="/login" className="link">Login</NavLink>
       </div>
     </nav>
   );
 }
-
-const styles = {
-  nav: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "15px 30px",
-    backgroundColor: "#111",
-    color: "#fff",
-  },
-  logo: {
-    margin: 0,
-  },
-  links: {
-    display: "flex",
-    gap: "20px",
-  },
-  link: {
-    color: "#fff",
-    textDecoration: "none",
-    fontSize: "16px",
-  },
-};
 
 export default Navbar;
