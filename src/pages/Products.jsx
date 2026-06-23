@@ -1,8 +1,10 @@
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { Link } from "react-router-dom";
 
 function Products() {
   const { addToCart } = useCart();
+  const { addToWishlist } = useWishlist();
 
   const products = [
     {
@@ -53,6 +55,7 @@ function Products() {
                 display: "flex",
                 gap: "10px",
                 justifyContent: "center",
+                flexWrap: "wrap",
               }}
             >
               <button
@@ -60,6 +63,13 @@ function Products() {
                 onClick={() => addToCart(product)}
               >
                 Add to Cart
+              </button>
+
+              <button
+                style={styles.button}
+                onClick={() => addToWishlist(product)}
+              >
+                ❤️ Wishlist
               </button>
 
               <Link
