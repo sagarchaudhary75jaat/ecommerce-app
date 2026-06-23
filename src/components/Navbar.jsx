@@ -10,37 +10,73 @@ function Navbar() {
 
   return (
     <nav className="nav">
-      {/* Logo */}
       <h2 className="logo">E-Commerce</h2>
 
-      {/* Hamburger */}
-      <div className="hamburger" onClick={() => setOpen(!open)}>
+      <div
+        className="hamburger"
+        onClick={() => setOpen(!open)}
+      >
         ☰
       </div>
 
-      {/* Links */}
-      <div className={`links ${open ? "active" : ""}`}>
-        <NavLink onClick={() => setOpen(false)} to="/" className="link">
+      <div className={`links ${open ? "menu-open" : ""}`}>
+        <NavLink
+          to="/"
+          onClick={() => setOpen(false)}
+          className={({ isActive }) =>
+            isActive ? "link active-link" : "link"
+          }
+        >
           Home
         </NavLink>
 
-        <NavLink onClick={() => setOpen(false)} to="/products" className="link">
+        <NavLink
+          to="/products"
+          onClick={() => setOpen(false)}
+          className={({ isActive }) =>
+            isActive ? "link active-link" : "link"
+          }
+        >
           Products
         </NavLink>
 
-        <NavLink onClick={() => setOpen(false)} to="/cart" className="link">
+        <NavLink
+          to="/cart"
+          onClick={() => setOpen(false)}
+          className={({ isActive }) =>
+            isActive ? "link active-link" : "link"
+          }
+        >
           Cart ({totalItems})
         </NavLink>
 
-        <NavLink onClick={() => setOpen(false)} to="/wishlist" className="link">
+        <NavLink
+          to="/wishlist"
+          onClick={() => setOpen(false)}
+          className={({ isActive }) =>
+            isActive ? "link active-link" : "link"
+          }
+        >
           Wishlist
         </NavLink>
 
-        <NavLink onClick={() => setOpen(false)} to="/login" className="link">
+        <NavLink
+          to="/login"
+          onClick={() => setOpen(false)}
+          className={({ isActive }) =>
+            isActive ? "link active-link" : "link"
+          }
+        >
           Login
         </NavLink>
 
-        <NavLink onClick={() => setOpen(false)} to="/checkout" className="link">
+        <NavLink
+          to="/checkout"
+          onClick={() => setOpen(false)}
+          className={({ isActive }) =>
+            isActive ? "link active-link" : "link"
+          }
+        >
           Checkout
         </NavLink>
       </div>

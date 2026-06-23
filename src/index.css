@@ -1,59 +1,5 @@
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-  background-color: #111;
-  color: white;
-}
+/* Navbar */
 
-.logo {
-  margin: 0;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.links {
-  display: flex;
-  gap: 20px;
-}
-
-.link {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 6px 10px;
-  border-radius: 5px;
-}
-
-.link:hover {
-  background-color: #333;
-}
-
-/* Active route highlight */
-.active {
-  background-color: #fff;
-  color: #000;
-}
-@media (max-width: 768px) {
-  .nav {
-    flex-direction: row;
-  }
-
-  .hamburger {
-    display: block;
-  }
-
-  .links {
-    position: absolute;
-    top: 60px;
-    right: 0;
-    background: #111;
-    flex-direction: column;
-    width: 200px;
-    padding: 10px;
-  }
-}
 .nav {
   display: flex;
   justify-content: space-between;
@@ -61,6 +7,7 @@
   padding: 15px 20px;
   background-color: #111;
   color: white;
+  position: relative;
 }
 
 .logo {
@@ -76,25 +23,31 @@
 .link {
   color: white;
   text-decoration: none;
+  padding: 5px;
+  transition: 0.3s;
 }
 
+/* Hover Effect */
 .link:hover {
-  color: lightgray;
+  color: #00ff88;
+}
+
+/* Active Page Link */
+.active-link {
+  color: #00ff88 !important;
+  font-weight: bold;
+  border-bottom: 2px solid #00ff88;
 }
 
 .hamburger {
   display: none;
   font-size: 26px;
   cursor: pointer;
+  color: white;
 }
 
-/* ACTIVE LINK */
-.active {
-  font-weight: bold;
-  border-bottom: 2px solid white;
-}
+/* Mobile Responsive */
 
-/* 📱 MOBILE RESPONSIVE */
 @media (max-width: 768px) {
   .hamburger {
     display: block;
@@ -109,9 +62,10 @@
     flex-direction: column;
     width: 200px;
     padding: 10px;
+    z-index: 100;
   }
 
-  .links.active {
+  .links.menu-open {
     display: flex;
   }
 }
