@@ -1,68 +1,145 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import products from "../data/products";
 
 function ProductDetails() {
   const { id } = useParams();
   const { addToCart } = useCart();
-
-  const products = [
-    {
-      id: 1,
-      name: "Shoes",
-      price: 1000,
-      image: "https://via.placeholder.com/300",
-      description: "Comfortable running shoes.",
-    },
-    {
-      id: 2,
-      name: "Watch",
-      price: 2000,
-      image: "https://via.placeholder.com/300",
-      description: "Premium wrist watch.",
-    },
-    {
-      id: 3,
-      name: "Shirt",
-      price: 800,
-      image: "https://via.placeholder.com/300",
-      description: "Cotton casual shirt.",
-    },
-    {
-      id: 4,
-      name: "Headphones",
-      price: 1500,
-      image: "https://via.placeholder.com/300",
-      description: "Noise-cancelling headphones.",
-    },
-  ];
 
   const product = products.find(
     (item) => item.id === Number(id)
   );
 
   if (!product) {
-    return <h2>Product Not Found</h2>;
+    return (
+      <div style={styles.notFound}>
+        <h2>Product Not Found</h2>
+
+        <Link to="/products" style={styles.backBtn}>
+          Back to Products
+        </Link>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <img
-        src={product.image}
-        alt={product.name}
-        width="300"
-      />
+    <div style={styles.container}>
+      <div style={styles.imageBox}>
+        <img
+          src={product.image}
+          alt={product.name}
+          style={styles.image}
+        />
+      </div>
 
-      <h1>{product.name}</h1>
+      <div style={styles.details}>
+        <span style={styles.category}>
+          {product.category}
+        </span>
 
-      <h2>₹{product.price}</h2>
+        <h1>{product.name}</h1>
 
-      <p>{product.description}</p>
+        <h2 style={styles.price}>
+          ₹{product.price}
+        </h2>
 
-      <button onClick={() => addToCart(product)}>
-        Add to Cart
-      </button>
+        <p style={styles.desc}>
+          {product.desc}
+        </p>
+
+        <button
+          onClick={() => addToCart(product)}
+          style={styles.btn}
+        >
+          Add to Cart 🛒
+        </button>
+
+        <Link
+          to="/products"
+          style={styles.backLink}
+        >
+          ← Back to Products
+        </Link>
+      </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    display: "flex",
+    gap: "40px",
+    padding: "30px",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  imageBox: {
+    flex: 1,
+    minWidth: "300px",
+  },
+
+  image: {
+    width: "100%",
+    maxWidth: "450px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+  },
+
+  details: {
+    flex: 1,
+    minWidth: "300px",
+  },
+
+  category: {
+    background: "#e8f5e9",
+    color: "#00c853",
+    padding: "6px 12px",
+    borderRadius: "20px",
+    fontSize: "14px",
+    fontWeight: "bold",
+  },
+
+  price: {
+    color: "#00c853",
+    marginTop: "10px",
+  },
+
+  desc: {
+    color: "#555",
+    lineHeight: "1.6",
+  },
+
+  btn: {
+    padding: "12px 20px",
+    background: "#111",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    marginTop: "15px",
+    fontSize: "16px",
+  },
+
+  backLink: {
+    display: "inline-block",
+    marginTop: "20px",
+    textDecoration: "none",
+    color: "#00c853",
+    fontWeight: "bold",
+  },
+
+  notFound: {
+    textAlign: "center",
+    padding: "50px",
+  },
+
+  backBtn: {
+    textDecoration: "none",
+    color: "#00c853",
+    fontWeight: "bold",
+  },
+};
 
 export default ProductDetails;

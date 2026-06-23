@@ -1,218 +1,185 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
-import { useWishlist } from "../context/WishlistContext";
 import { Link } from "react-router-dom";
+import products from "../data/products";
 
 function Products() {
   const { addToCart } = useCart();
-  const { addToWishlist } = useWishlist();
-
-  const [products, setProducts] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("All");
 
-  // 🌐 Fetch products
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-        setFiltered(data);
-        setLoading(false);
-      });
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  // 🌐 Fetch categories
-  useEffect(() => {
-    fetch("https://fakestoreapi.com/products/categories")
-      .then((res) => res.json())
-      .then((data) => setCategories(data));
-  }, []);
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(search.toLowerCase()) ||
+      product.category.toLowerCase().includes(search.toLowerCase());
 
-  // 🔍 Filter logic (search + category)
-  useEffect(() => {
-    let result = products;
+    const matchesCategory =
+      category === "All" || product.category === category;
 
-    if (selectedCategory !== "all") {
-      result = result.filter(
-        (p) => p.category === selectedCategory
-      );
-    }
-
-    if (search) {
-      result = result.filter((p) =>
-        p.title.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    setFiltered(result);
-  }, [search, selectedCategory, products]);
+    return matchesSearch && matchesCategory;
+  });
 
   if (loading) {
-    return <h2 style={{ padding: "20px" }}>Loading products...</h2>;
+    return (
+      <div style={styles.loading}>
+        <h2>🛍 Loading Products...</h2>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Products</h1>
+    <div style={styles.page}>
+      <h1>🛍 Products</h1>
 
-      {/* 🔍 SEARCH */}
-      <input
-        type="text"
-        placeholder="Search products..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={styles.search}
-      />
+      <div style={styles.filterBox}>
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={styles.search}
+        />
 
-      {/* 🏷 CATEGORY FILTER */}
-      <div style={styles.catBox}>
-        <button
-          style={styles.catBtn}
-          onClick={() => setSelectedCategory("all")}
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          style={styles.select}
         >
-          All
-        </button>
-
-        {categories.map((cat, index) => (
-          <button
-            key={index}
-            style={styles.catBtn}
-            onClick={() => setSelectedCategory(cat)}
-          >
-            {cat}
-          </button>
-        ))}
+          <option value="All">All Categories</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Watch">Watch</option>
+          <option value="Shirt">Shirt</option>
+          <option value="Headphones">Headphones</option>
+          <option value="Mobile">Mobile</option>
+          <option value="Laptop">Laptop</option>
+          <option value="Accessories">Accessories</option>
+        </select>
       </div>
 
-      {/* PRODUCTS */}
+      <p>
+        <strong>{filteredProducts.length}</strong> Products Found
+      </p>
+
       <div style={styles.grid}>
-        {filtered.length > 0 ? (
-          filtered.map((product) => (
-            <div key={product.id} style={styles.card}>
-              <img
-                src={product.image}
-                alt={product.title}
-                style={styles.image}
-              />
+        {filteredProducts.map((product) => (
+          <div key={product.id} style={styles.card}>
+            <img
+              src={product.image}
+              alt={product.name}
+              style={styles.image}
+            />
 
-              <h3>{product.title.slice(0, 40)}</h3>
+            <h3>{product.name}</h3>
 
-              <p>₹{Math.round(product.price * 80)}</p>
+            <p>{product.category}</p>
 
-              <div style={styles.btnGroup}>
-                <button
-                  style={styles.button}
-                  onClick={() =>
-                    addToCart({
-                      id: product.id,
-                      name: product.title,
-                      price: Math.round(product.price * 80),
-                      image: product.image,
-                    })
-                  }
-                >
-                  Add to Cart
-                </button>
+            <h4>₹{product.price}</h4>
 
-                <button
-                  style={styles.button}
-                  onClick={() =>
-                    addToWishlist({
-                      id: product.id,
-                      name: product.title,
-                      price: Math.round(product.price * 80),
-                      image: product.image,
-                    })
-                  }
-                >
-                  ❤️ Wishlist
-                </button>
+            <div style={styles.btnGroup}>
+              <button
+                style={styles.btn}
+                onClick={() => addToCart(product)}
+              >
+                Add to Cart
+              </button>
 
-                <Link
-                  to={`/product/${product.id}`}
-                  style={{
-                    ...styles.button,
-                    textDecoration: "none",
-                    display: "inline-block",
-                  }}
-                >
-                  View
-                </Link>
-              </div>
+              <Link
+                to={`/product/${product.id}`}
+                style={styles.viewBtn}
+              >
+                View
+              </Link>
             </div>
-          ))
-        ) : (
-          <h3>No products found 😢</h3>
-        )}
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
 const styles = {
+  page: {
+    padding: "20px",
+  },
+
+  loading: {
+    textAlign: "center",
+    marginTop: "100px",
+  },
+
+  filterBox: {
+    display: "flex",
+    gap: "10px",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+  },
+
   search: {
     padding: "10px",
-    width: "100%",
-    maxWidth: "300px",
-    marginBottom: "10px",
-    borderRadius: "5px",
+    flex: "1",
+    minWidth: "250px",
+    borderRadius: "8px",
     border: "1px solid #ccc",
   },
 
-  catBox: {
-    display: "flex",
-    gap: "10px",
-    flexWrap: "wrap",
-    marginBottom: "20px",
-  },
-
-  catBtn: {
-    padding: "6px 10px",
-    border: "1px solid black",
-    background: "white",
-    cursor: "pointer",
-    borderRadius: "5px",
+  select: {
+    padding: "10px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
   },
 
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px,1fr))",
     gap: "20px",
   },
 
   card: {
     border: "1px solid #ddd",
+    borderRadius: "10px",
     padding: "15px",
     textAlign: "center",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    background: "#fff",
+    transition: "0.3s",
   },
 
   image: {
     width: "100%",
-    height: "150px",
-    objectFit: "contain",
+    height: "180px",
+    objectFit: "cover",
+    borderRadius: "10px",
   },
 
   btnGroup: {
     display: "flex",
-    gap: "8px",
+    gap: "10px",
     justifyContent: "center",
-    flexWrap: "wrap",
+    marginTop: "10px",
   },
 
-  button: {
-    marginTop: "10px",
+  btn: {
     padding: "8px 12px",
-    backgroundColor: "black",
+    background: "black",
     color: "white",
     border: "none",
     cursor: "pointer",
+    borderRadius: "5px",
+  },
+
+  viewBtn: {
+    padding: "8px 12px",
+    background: "green",
+    color: "white",
+    textDecoration: "none",
     borderRadius: "5px",
   },
 };

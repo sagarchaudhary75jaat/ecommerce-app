@@ -11,61 +11,73 @@ function Payment() {
     cvv: "",
   });
 
-  // ✅ FIX: handle input changes
+  const [loading, setLoading] = useState(false);
+
+  // INPUT CHANGE
   const handleChange = (e) => {
     setCard({ ...card, [e.target.name]: e.target.value });
   };
 
+  // PAYMENT HANDLER
   const handlePay = (e) => {
     e.preventDefault();
 
+    // Basic validation
     if (!card.name || !card.number || !card.expiry || !card.cvv) {
-      alert("Please fill all details");
+      alert("⚠️ Please fill all details");
       return;
     }
 
-    // Get cart from localStorage
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    if (cart.length === 0) {
-      alert("Cart is empty!");
+    if (card.number.length < 12) {
+      alert("⚠️ Invalid card number");
       return;
     }
 
-    // Calculate total
-    const total = cart.reduce(
-      (sum, item) => sum + item.price * item.qty,
-      0
-    );
+    setLoading(true);
 
-    // Get existing orders
-    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    setTimeout(() => {
+      // Get cart
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    // Add new order
-    const newOrder = {
-      id: Date.now(),
-      items: cart,
-      total: total,
-      date: new Date().toLocaleString(),
-    };
+      if (cart.length === 0) {
+        alert("Cart is empty!");
+        setLoading(false);
+        return;
+      }
 
-    orders.push(newOrder);
+      // Total
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.qty,
+        0
+      );
 
-    // Save to localStorage
-    localStorage.setItem("orders", JSON.stringify(orders));
+      // Orders
+      const orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-    // Clear cart after order
-    localStorage.removeItem("cart");
+      const newOrder = {
+        id: Date.now(),
+        items: cart,
+        total,
+        date: new Date().toLocaleString(),
+      };
 
-    alert("Payment Successful 🎉");
+      orders.push(newOrder);
 
-    navigate("/order-success");
+      localStorage.setItem("orders", JSON.stringify(orders));
+      localStorage.removeItem("cart");
+
+      setLoading(false);
+
+      alert("🎉 Payment Successful!");
+
+      navigate("/order-success");
+    }, 1000);
   };
 
   return (
     <div style={styles.container}>
       <form style={styles.box} onSubmit={handlePay}>
-        <h1>Payment 💳</h1>
+        <h1>💳 Payment</h1>
 
         <input
           name="name"
@@ -85,7 +97,7 @@ function Payment() {
 
         <input
           name="expiry"
-          placeholder="Expiry Date (MM/YY)"
+          placeholder="Expiry (MM/YY)"
           value={card.expiry}
           onChange={handleChange}
           style={styles.input}
@@ -99,13 +111,19 @@ function Payment() {
           style={styles.input}
         />
 
-        <button type="submit" style={styles.btn}>
-          Pay Now
+        <button
+          type="submit"
+          style={styles.btn}
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Pay Now"}
         </button>
       </form>
     </div>
   );
 }
+
+/* ================= STYLES ================= */
 
 const styles = {
   container: {
@@ -113,23 +131,26 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    background: "#f5f5f5",
   },
 
   box: {
-    width: "300px",
+    width: "320px",
     display: "flex",
     flexDirection: "column",
-    gap: "10px",
+    gap: "12px",
     padding: "20px",
     border: "1px solid #ddd",
-    borderRadius: "10px",
+    borderRadius: "12px",
     boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+    background: "#fff",
   },
 
   input: {
     padding: "10px",
     border: "1px solid #ccc",
-    borderRadius: "5px",
+    borderRadius: "6px",
+    outline: "none",
   },
 
   btn: {
@@ -138,7 +159,8 @@ const styles = {
     color: "white",
     border: "none",
     cursor: "pointer",
-    borderRadius: "5px",
+    borderRadius: "6px",
+    transition: "0.3s",
   },
 };
 
